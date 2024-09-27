@@ -1,0 +1,17 @@
+**Explanation:**
+
+- The `README.md` provides comprehensive information about the project, including installation instructions, usage, and controls.
+- It serves as a guide for anyone who wants to use or contribute to your project.
+
+---
+
+## **6. Optional: `LICENSE`**
+
+If you wish to include a license file, here's the MIT License:
+
+```text
+MIT License
+
+Copyright (c) 2023 Your Name
+
+Permission is hereby granted, free of charge, to any person obtaining a copy...
