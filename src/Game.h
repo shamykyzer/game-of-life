@@ -31,7 +31,7 @@ private:
     // Current generation count
     int generation;
 
-    // 2D grid representing the state of each cell (alive or dead)
+    // 2D grid representing the age of each cell (0 = dead)
     std::vector<std::vector<uint8_t>> grid;
 
     // Simulation control variables
@@ -53,6 +53,9 @@ private:
 
     // Resets the simulation to a new random state
     void reset();
+
+    // Function to map cell age to color
+    Color getColorForAge(uint8_t age) const;
 };
 
 #endif // GAME_H

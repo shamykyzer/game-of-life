@@ -38,7 +38,7 @@ void Game::initializeRandom() {
     // Iterate over each cell in the grid
     for (auto& row : grid)
         for (auto& cell : row)
-            cell = rand() % 2;  // Assign a random value of 0 or 1
+            cell = (rand() % 2) ? 1 : 0;  // Alive cells start with age 1, dead cells are 0
 }
 
 // Starts the main game loop
@@ -101,7 +101,10 @@ void Game::handleInput() {
 
         // Check if the coordinates are within the grid boundaries
         if (x >= 0 && x < width && y >= 0 && y < height) {
-            grid[y][x] = !grid[y][x];  // Toggle the cell state
+            if (grid[y][x] == 0)
+                grid[y][x] = 1;  // Make the cell alive with age 1
+            else
+                grid[y][x] = 0;  // Kill the cell
         }
     }
 }
@@ -123,12 +126,16 @@ void Game::update() {
             int neighbors = countNeighbors(x, y);  // Count alive neighbors
 
             // Apply the Game of Life rules
-            if (grid[y][x]) {
-                // Any live cell with two or three live neighbors survives
-                newGrid[y][x] = (neighbors == 2 || neighbors == 3) ? 1 : 0;
-            } else {
-                // Any dead cell with exactly three live neighbors becomes a live cell
-                newGrid[y][x] = (neighbors == 3) ? 1 : 0;
+            if (grid[y][x] > 0) {  // Cell is alive
+                if (neighbors == 2 || neighbors == 3)
+                    newGrid[y][x] = grid[y][x] + 1;  // Cell survives and ages
+                else
+                    newGrid[y][x] = 0;  // Cell dies
+            } else {  // Cell is dead
+                if (neighbors == 3)
+                    newGrid[y][x] = 1;  // Cell becomes alive with age 1
+                else
+                    newGrid[y][x] = 0;  // Cell remains dead
             }
         }
     }
@@ -153,11 +160,33 @@ int Game::countNeighbors(int x, int y) const {
 
             // Check if the neighbor is within the grid boundaries
             if (nx >= 0 && nx < width && ny >= 0 && ny < height)
-                count += grid[ny][nx];  // Add the neighbor's state to the count
+                if (grid[ny][nx] > 0)  // Only count alive cells
+                    count += 1;
         }
     }
 
     return count;  // Return the total count of alive neighbors
+}
+
+// Function to map cell age to color
+Color Game::getColorForAge(uint8_t age) const {
+    // Define maximum age for color mapping
+    const uint8_t maxAge = 20;  // Adjust as needed
+    if (age == 0) {
+        return BLACK;  // Dead cells are black
+    }
+
+    // Normalize age to a value between 0 and 1
+    float normalizedAge = static_cast<float>(age) / static_cast<float>(maxAge);
+    if (normalizedAge > 1.0f) normalizedAge = 1.0f;
+
+    // Map normalized age to a color gradient from blue to red
+    unsigned char red = static_cast<unsigned char>(normalizedAge * 255);
+    unsigned char blue = static_cast<unsigned char>((1.0f - normalizedAge) * 255);
+    unsigned char green = 0;
+
+    Color color = { red, green, blue, 255 };
+    return color;
 }
 
 // Renders the grid and UI elements on the screen
@@ -187,9 +216,12 @@ void Game::draw() const {
                 static_cast<float>(cellSize)
             };
 
-            if (grid[y][x]) {
-                // Draw a filled rectangle for alive cells
-                DrawRectangleRec(cell, WHITE);
+            uint8_t age = grid[y][x];
+            if (age > 0) {
+                // Get color based on cell age
+                Color cellColor = getColorForAge(age);
+                // Draw a filled rectangle for alive cells with age-based color
+                DrawRectangleRec(cell, cellColor);
             } else {
                 // Draw an outline for dead cells with thinner lines
                 DrawRectangleLinesEx(cell, borderThickness, DARKGRAY);
