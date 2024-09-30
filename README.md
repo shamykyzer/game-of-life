@@ -5,6 +5,8 @@ A graphical C++ implementation of Conway's Game of Life using [raylib](https://w
 ## Table of Contents
 
 - [Introduction](#introduction)
+- [How the Game of Life Works](#how-the-game-of-life-works)
+  - [The Rules](#the-rules)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -21,6 +23,34 @@ Conway's Game of Life is a cellular automaton devised by mathematician John Hort
 This project implements the Game of Life using C++ and **raylib** for graphical rendering, providing an interactive and visually appealing experience. The latest update introduces age-based coloring of cells, enhancing the visual representation of the simulation.
 
 _This project was inspired by my second-year module on Artificial Intelligence at the University of Leeds._
+
+## How the Game of Life Works
+
+The Game of Life is a zero-player game that simulates the life and death of cells on a grid based on initial conditions and simple rules. It's a classic example of how complex patterns and behaviors can emerge from simple underlying rules.
+
+### The Rules
+
+The simulation occurs on a two-dimensional grid of square cells. Each cell has two possible states:
+
+- **Alive** (populated)
+- **Dead** (unpopulated)
+
+The state of the grid evolves in discrete steps called generations. The state of each cell in the next generation is determined by the current state of the cell and the number of alive neighbors it has. The neighbors of a cell are the 8 cells adjacent to it horizontally, vertically, and diagonally.
+
+The rules governing the evolution are as follows:
+
+1. **Underpopulation**: Any live cell with fewer than two live neighbors dies, as if caused by underpopulation.
+2. **Survival**: Any live cell with two or three live neighbors lives on to the next generation.
+3. **Overpopulation**: Any live cell with more than three live neighbors dies, as if by overpopulation.
+4. **Reproduction**: Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+
+These simple rules can lead to a variety of behaviors, including:
+
+- **Still Lifes**: Patterns that do not change from one generation to the next.
+- **Oscillators**: Patterns that cycle through a set of states periodically.
+- **Spaceships**: Patterns that translate themselves across the grid over successive generations.
+
+The Game of Life is Turing complete and can simulate a universal constructor or any other Turing machine.
 
 ## Features
 
